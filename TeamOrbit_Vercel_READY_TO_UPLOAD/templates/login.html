@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="auth-wrapper">
+
+    <div class="auth-card">
+
+        <div class="auth-logo">T</div>
+
+        <h1>Welcome back</h1>
+
+        <p class="muted">
+            Login to continue to TeamOrbit.
+        </p>
+
+        <form method="post">
+
+            <label>Email</label>
+            <input
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+            >
+
+            <label>Password</label>
+            <input
+                name="password"
+                type="password"
+                placeholder="Enter password"
+                required
+            >
+
+            <button class="button full" type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <p class="auth-bottom">
+            Don't have an account?
+            <a href="{{ url_for('register') }}">Create account</a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

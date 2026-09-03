@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">OVERVIEW</span>
+        <h1>Project Dashboard</h1>
+        <p>
+            Welcome back, {{ current_user.name }}.
+        </p>
+    </div>
+
+    {% if current_user.role in ("admin", "manager") %}
+    <a class="button" href="{{ url_for('tasks') }}">
+        + Create Task
+    </a>
+    {% endif %}
+
+</div>
+
+
+<div class="cards">
+
+    <div class="stat">
+        <span>Total Tasks</span>
+        <strong>{{ total }}</strong>
+        <small>All assigned work</small>
+    </div>
+
+    <div class="stat">
+        <span>Completed</span>
+        <strong>{{ completed }}</strong>
+        <small>Finished tasks</small>
+    </div>
+
+    <div class="stat">
+        <span>In Progress</span>
+        <strong>{{ in_progress }}</strong>
+        <small>Active work</small>
+    </div>
+
+    <div class="stat">
+        <span>Overdue</span>
+        <strong>{{ overdue }}</strong>
+        <small>Needs attention</small>
+    </div>
+
+</div>
+
+
+<div class="dashboard-grid">
+
+    <div class="panel">
+
+        <div class="panel-title">
+            <div>
+                <span class="eyebrow">PROJECT</span>
+                <h2>Overall Progress</h2>
+            </div>
+
+            <span class="health {{ health|lower|replace(' ','-') }}">
+                {{ health }}
+            </span>
+        </div>
+
+        <div class="progress huge">
+            <span style="width:{{ progress }}%"></span>
+        </div>
+
+        <div class="progress-row">
+            <strong>{{ progress }}%</strong>
+            <span>{{ completed }} of {{ total }} tasks completed</span>
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-title">
+            <div>
+                <span class="eyebrow">WORKFLOW</span>
+                <h2>Task Status</h2>
+            </div>
+        </div>
+
+        <div class="status-list">
+
+            <div>
+                <span><i class="dot pending"></i>Pending</span>
+                <strong>{{ pending }}</strong>
+            </div>
+
+            <div>
+                <span><i class="dot progress-dot"></i>In Progress</span>
+                <strong>{{ in_progress }}</strong>
+            </div>
+
+            <div>
+                <span><i class="dot completed"></i>Completed</span>
+                <strong>{{ completed }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-title">
+        <div>
+            <span class="eyebrow">LATEST WORK</span>
+            <h2>Recent Tasks</h2>
+        </div>
+
+        <a href="{{ url_for('tasks') }}">View all →</a>
+    </div>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for task in tasks[:8] %}
+
+                <tr>
+
+                    <td>
+                        <strong>{{ task.title }}</strong>
+                        <small>{{ task.description }}</small>
+                    </td>
+
+                    <td>
+                        <span class="priority {{ task.priority|lower }}">
+                            {{ task.priority }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge">
+                            {{ task.status }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ task.end_date or "—" }}
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="4" class="empty">
+                        No tasks available.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
