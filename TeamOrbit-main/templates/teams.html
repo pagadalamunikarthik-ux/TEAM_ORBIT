@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">COLLABORATION</span>
+        <h1>Teams</h1>
+        <p>Create and organize project teams.</p>
+    </div>
+
+</div>
+
+{% if current_user.role in ("admin", "manager") %}
+
+<div class="panel form-panel">
+
+    <h2>Create Team</h2>
+
+    <form method="post" class="inline-form">
+
+        <input
+            name="name"
+            placeholder="e.g. Development Team"
+            required
+        >
+
+        <button class="button">
+            Create Team
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+
+<div class="cards team-cards">
+
+{% for team in teams %}
+
+<div class="team-card">
+
+    <div class="team-icon">👥</div>
+
+    <h3>{{ team.name }}</h3>
+
+    <p>Project development team</p>
+
+</div>
+
+{% else %}
+
+<div class="panel empty">
+    No teams created yet.
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow">ADMIN</span>
+        <h1>Users</h1>
+        <p>Manage TeamOrbit users and roles.</p>
+    </div>
+</div>
+
+<div class="panel">
+
+<table>
+
+<thead>
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Role</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for user in users %}
+
+<tr>
+    <td><strong>{{ user.name }}</strong></td>
+    <td>{{ user.email }}</td>
+    <td><span class="role-pill">{{ user.role|capitalize }}</span></td>
+</tr>
+
+{% else %}
+
+<tr>
+    <td colspan="3" class="empty">No users found.</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}
