@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Assignment{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">TEAMORBIT INTELLIGENCE</span>
+        <h1>Smart Task Assignment</h1>
+        <p>
+            Find the team member with the most suitable current workload.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="smart-banner">
+
+    <div class="smart-icon">AI</div>
+
+    <div>
+        <h2>Workload-aware recommendation</h2>
+        <p>
+            TeamOrbit ranks members using active tasks,
+            overdue tasks and completed work.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+<table>
+
+<thead>
+
+<tr>
+    <th>Rank</th>
+    <th>Member</th>
+    <th>Active Tasks</th>
+    <th>Overdue</th>
+    <th>Completed</th>
+    <th>Recommendation</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for score, active, overdue, completed, member in recommendations %}
+
+<tr>
+
+    <td>
+        <strong>#{{ loop.index }}</strong>
+    </td>
+
+    <td>
+        <strong>{{ member.name }}</strong>
+        <small>{{ member.email }}</small>
+    </td>
+
+    <td>{{ active }}</td>
+
+    <td>
+        {% if overdue %}
+            <span class="overdue">{{ overdue }}</span>
+        {% else %}
+            0
+        {% endif %}
+    </td>
+
+    <td>{{ completed }}</td>
+
+    <td>
+
+        {% if loop.first %}
+
+            <span class="recommended">
+                ★ Recommended
+            </span>
+
+        {% else %}
+
+            <span class="muted">
+                Available
+            </span>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% else %}
+
+<tr>
+    <td colspan="6" class="empty">
+        No Team Members found.
+    </td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="panel explanation">
+
+    <h2>How the recommendation works</h2>
+
+    <div class="logic-grid">
+
+        <div>
+            <strong>1. Active workload</strong>
+            <p>
+                More pending or in-progress tasks increase workload.
+            </p>
+        </div>
+
+        <div>
+            <strong>2. Deadline risk</strong>
+            <p>
+                Overdue tasks increase the workload score.
+            </p>
+        </div>
+
+        <div>
+            <strong>3. Completion history</strong>
+            <p>
+                Completed work slightly improves the candidate score.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
