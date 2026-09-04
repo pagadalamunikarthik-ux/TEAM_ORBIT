@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Project Health{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">PROJECT INTELLIGENCE</span>
+        <h1>Project Health</h1>
+        <p>
+            Understand whether your projects are on track or need attention.
+        </p>
+    </div>
+
+</div>
+
+
+{% for item in health_data %}
+
+<div class="health-card panel">
+
+    <div class="health-header">
+
+        <div>
+            <span class="eyebrow">PROJECT #{{ item.project.id }}</span>
+            <h2>{{ item.project.name }}</h2>
+            <p>{{ item.project.description }}</p>
+        </div>
+
+        <span class="health {{ item.health|lower|replace(' ','-') }}">
+            {{ item.health }}
+        </span>
+
+    </div>
+
+
+    <div class="health-stats">
+
+        <div>
+            <span>Total Tasks</span>
+            <strong>{{ item.total }}</strong>
+        </div>
+
+        <div>
+            <span>Completed</span>
+            <strong>{{ item.completed }}</strong>
+        </div>
+
+        <div>
+            <span>In Progress</span>
+            <strong>{{ item.in_progress }}</strong>
+        </div>
+
+        <div>
+            <span>Pending</span>
+            <strong>{{ item.pending }}</strong>
+        </div>
+
+        <div>
+            <span>Overdue</span>
+            <strong>{{ item.overdue }}</strong>
+        </div>
+
+    </div>
+
+
+    <div class="health-progress">
+
+        <div class="progress huge">
+            <span style="width:{{ item.progress }}%"></span>
+        </div>
+
+        <div class="progress-row">
+            <strong>{{ item.progress }}%</strong>
+            <span>Project completion</span>
+        </div>
+
+    </div>
+
+
+    {% if item.overdue > 0 %}
+
+        <div class="warning">
+            ⚠ {{ item.overdue }} task(s) are overdue.
+            Review deadlines and workload.
+        </div>
+
+    {% else %}
+
+        <div class="success-box">
+            ✓ No overdue tasks. Project is currently on track.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% else %}
+
+<div class="panel empty">
+    No projects available. Create a project first.
+</div>
+
+{% endfor %}
+
+
+<div class="panel">
+
+    <span class="eyebrow">DECISION RULES</span>
+
+    <h2>How TeamOrbit determines health</h2>
+
+    <div class="logic-grid">
+
+        <div>
+            <strong>GOOD</strong>
+            <p>
+                No overdue tasks and acceptable progress.
+            </p>
+        </div>
+
+        <div>
+            <strong>NEEDS ATTENTION</strong>
+            <p>
+                At least one overdue task or slower progress.
+            </p>
+        </div>
+
+        <div>
+            <strong>AT RISK</strong>
+            <p>
+                Multiple overdue tasks or significant deadline risk.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

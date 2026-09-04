@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">WORK MANAGEMENT</span>
+        <h1>Tasks</h1>
+        <p>Create, assign and track project work.</p>
+    </div>
+
+</div>
+
+
+{% if current_user.role in ("admin", "manager") %}
+
+<div class="panel form-panel">
+
+    <div class="panel-title">
+        <div>
+            <h2>Create Task</h2>
+            <p>Assign work to a team member.</p>
+        </div>
+    </div>
+
+    <form method="post">
+
+        <div class="form-grid">
+
+            <div>
+                <label>Title</label>
+                <input
+                    name="title"
+                    placeholder="e.g. Database Design"
+                    required
+                >
+            </div>
+
+            <div>
+                <label>Project</label>
+                <select name="project_id" required>
+
+                    {% for project in projects %}
+                    <option value="{{ project.id }}">
+                        {{ project.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+        </div>
+
+        <label>Description</label>
+        <textarea
+            name="description"
+            placeholder="Describe the task..."
+        ></textarea>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Assign To</label>
+
+                <select name="assigned_to">
+
+                    <option value="">Unassigned</option>
+
+                    {% for user in users if user.role == "member" %}
+                    <option value="{{ user.id }}">
+                        {{ user.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div>
+                <label>Priority</label>
+
+                <select name="priority">
+                    <option>High</option>
+                    <option selected>Medium</option>
+                    <option>Low</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Start Date</label>
+                <input name="start_date" type="date">
+            </div>
+
+            <div>
+                <label>End Date</label>
+                <input name="end_date" type="date">
+            </div>
+
+        </div>
+
+        <button class="button">
+            Create Task
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+
+<div class="panel">
+
+    <div class="panel-title">
+        <div>
+            <span class="eyebrow">TASK LIST</span>
+            <h2>
+                {% if current_user.role == "member" %}
+                    My Tasks
+                {% else %}
+                    All Tasks
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>Task</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Update</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for task in tasks %}
+
+        <tr>
+
+            <td>
+                <strong>{{ task.title }}</strong>
+                <small>{{ task.description }}</small>
+            </td>
+
+            <td>
+                <span class="priority {{ task.priority|lower }}">
+                    {{ task.priority }}
+                </span>
+            </td>
+
+            <td>
+                <span class="badge">
+                    {{ task.status }}
+                </span>
+            </td>
+
+            <td>
+                {% if task.end_date and task.end_date < today and task.status != "Completed" %}
+                    <span class="overdue">
+                        {{ task.end_date }} · Overdue
+                    </span>
+                {% else %}
+                    {{ task.end_date or "—" }}
+                {% endif %}
+            </td>
+
+            <td>
+
+                <form
+                    method="post"
+                    action="{{ url_for('update_status', task_id=task.id) }}"
+                    class="status-form"
+                >
+
+                    <select name="status">
+
+                        <option
+                            {% if task.status == "Pending" %}selected{% endif %}
+                        >
+                            Pending
+                        </option>
+
+                        <option
+                            {% if task.status == "In Progress" %}selected{% endif %}
+                        >
+                            In Progress
+                        </option>
+
+                        <option
+                            {% if task.status == "Completed" %}selected{% endif %}
+                        >
+                            Completed
+                        </option>
+
+                    </select>
+
+                    <button>Save</button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% else %}
+
+        <tr>
+            <td colspan="5" class="empty">
+                No tasks available.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

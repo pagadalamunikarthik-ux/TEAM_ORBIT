@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">PROJECTS</span>
+        <h1>Projects</h1>
+        <p>Manage your software projects.</p>
+    </div>
+
+</div>
+
+
+{% if current_user.role in ("admin", "manager") %}
+
+<div class="panel form-panel">
+
+    <h2>Create Project</h2>
+
+    <form method="post">
+
+        <label>Project Name</label>
+        <input name="name" placeholder="e.g. TeamOrbit Software" required>
+
+        <label>Description</label>
+        <textarea
+            name="description"
+            placeholder="Describe the project..."
+        ></textarea>
+
+        <label>Team</label>
+        <select name="team_id">
+
+            <option value="">No team</option>
+
+            {% for team in teams %}
+            <option value="{{ team.id }}">
+                {{ team.name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <button class="button">
+            Create Project
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+
+<div class="project-grid">
+
+{% for project in projects %}
+
+<div class="project-card">
+
+    <div class="project-icon">◈</div>
+
+    <h2>{{ project.name }}</h2>
+
+    <p>{{ project.description or "No description provided." }}</p>
+
+    <div class="project-footer">
+        <span>Project #{{ project.id }}</span>
+        <a href="{{ url_for('tasks') }}">Tasks →</a>
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="panel empty">
+    No projects created yet.
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
